@@ -11,112 +11,167 @@
         height:400px;
       }
     </style>
-   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.4/d3.min.js" integrity="sha512-hnFpvCiJ8Fr1lYLqcw6wLgFUOEZ89kWCkO+cEekwcWPIPKyknKV1eZmSSG3UxXfsSuf+z/SgmiYB1zFOg3l2UQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body class="bg-light">
-   
+    <input type="file" id="uploadfile" accept=".csv">
+    <button id="uploadconfirm">Upload File</button>
+    <hr>
+    <button onclick="updateChart('kdaData')">Kda Data</button>
+    <button onclick="updateChart('killData')">Kill Data</button>
+    <button onclick="updateChart('deathData')">Death Data</button>
+    <button onclick="updateChart('assistantData')">Assistant Data</button>
+    <button onclick="updateChart('winrateData')">Win Rate Data</button>
+    <button onclick="updateChart('defenderwinrateData')">Defender Win Rate Data</button>
+    <button onclick="updateChart('attackwinrateData')">Attack Win Rate Data</button>
+    <button onclick="updateChart('pickrateData')">Pick Rate Data</button>
+    <button onclick="updateChart('totalgameData')">TotalGame Data</button>
      <div class="chartBox">  
     <canvas id="myChart" ></canvas>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.4/d3.min.js" integrity="sha512-hnFpvCiJ8Fr1lYLqcw6wLgFUOEZ89kWCkO+cEekwcWPIPKyknKV1eZmSSG3UxXfsSuf+z/SgmiYB1zFOg3l2UQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-     let filename = 'valorant dataset.csv';
-     d3.csv(filename).then(function(loadedData){
-      console.log(loadedData);
-
-     });
-
-
-
-const data = {
-  labels: [ 'Split', 'Bind', 'Haven', 'Ascent', 'Icebox','Breeze'],
-        datasets: [{
-            label: 'kda',
-            data: kda,
-            backgroundColor: 'rgba(255, 99, 132, 0.4)',
-           borderColor:  'rgba(255, 99, 132, 1)',
-           borderWidth: 1
-        },{
-            label: 'kill',
-            data: kill,
-            backgroundColor:'rgba(54, 162, 235, 0.4)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        },{
-            label: 'death',
-            data: death,
-            backgroundColor:  'rgba(255, 206, 86, 0.4)',
-             borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1
-        },{
-            label: 'assistant',
-            data: assistant,
-            backgroundColor: 'rgba(75, 192, 192, 0.4)',
-             borderColor:  'rgba(75, 192, 192, 1)',
-             borderWidth: 1
-        },{
-            label: 'winrate',
-            data: winrate,
-            backgroundColor: 'rgba(153, 102, 255, 0.4)',
-             borderColor:  'rgba(153, 102, 255, 1)',
-             borderWidth: 1
-        },{
-            label: 'defenderwinrate',
-            data: defenderwinrate,
-            backgroundColor: 'rgba(75, 102, 192, 0.4)',
-             borderColor:  'rgba(255, 192, 86, 1)',
-             borderWidth: 1
-        },{
-            label: 'attackwinrate',
-            data: attackwinrate,
-            backgroundColor: 'rgba(255, 102, 321, 0.4)',
-             borderColor:  'rgba(153, 192, 255, 1)',
-             borderWidth: 1
-        },{
-            label: 'pickrate',
-            data: pickrate,
-            backgroundColor: 'rgba(255, 162, 235, 0.4)',
-             borderColor:  'rgba(54, 206, 235, 1)',
-             borderWidth: 1
-        },{
-            label: 'totalgame',
-            data: totalgame,
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-             borderColor:  'rgba(75, 162, 235, 1)',
-             borderWidth: 1
-        },]
-      };
-
-  //config
-const config = {
-  type: 'bar',
-    data,
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+        const kdaData=[];
+        const killData=[];
+        const deathData=[];
+        const assistantData=[];
+        const winrateData=[];
+        const defenderwinrateData=[];
+        const attackwinrateData=[];
+        const pickrateData=[];
+        const totalgameData=[];
+        const uploadconfirm=document.getElementById ('uploadconfirm').
+          addEventListener('click', () =>{
+         Papa.parse(document.getElementById ('uploadfile').files [0],
+          {
+           download: true,
+           header: true,
+           skipEmptyLines: true,
+           complete: function(results){
+           console.log( results);
+           for( i=0;i<results.data.length;i++){
+            kdaData.push(results.data[i].kda);
+            killData.push( results. data[i].kill );
+            deathData.push( results. data[i].death);
+            assistantData.push( results. data[i].assistant);
+            winrateData.push( results. data[i].winrate);
+            attackwinrateData.push( results. data[i].attackwinrate);
+            defenderwinrateData.push( results. data[i].defenderwinrate);
+            pickrateData.push( results. data[i].pickrate);
+            totalgameData.push( results. data[i].totalgame);
             }
-        }
-    }
+         
+           console.log(kdaData);
+           console.log(killData);
+           console.log(deathData);
+           console.log(assistantData);
+           console.log(winrateData);
+           console.log(attackwinrateData);
+           console.log(defenderwinrateData );
+           console.log(pickrateData);
+           console.log(totalgameData);
+          }
+          });
+        });
+      //setup block
+      const data = {
+  labels: [
+    'All',
+    'Split',
+    'Bind',
+    'Haven',
+    'Ascent',
+    'Icebox',
+    'Breeze'
+  ],
+  datasets: [ {
+    label: 'My Second Dataset',
+    data: [28, 48, 40, 19, 96, 27, 100],
+    fill: true,
+    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    borderColor: 'rgb(54, 162, 235)',
+    pointBackgroundColor: 'rgb(54, 162, 235)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgb(54, 162, 235)'
+  }]
 };
 
-  //render
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    elements: {
+      line: {
+        borderWidth: 3
+      }
+    }
+  },
+};
+      //init render block
 
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-    
-  );
-    
-  </script>
-   
+        var myChart=new Chart(
+          document.getElementById ('myChart'),
+           config
+        );
+        
+          function updateChart (label){
+            myChart.data.datasets[0].label= label; 
+            if (label === "kdaData"){
+             myChart.data.datasets [0].data= kdaData;
+            }
+          if (label === "killData"){
+             myChart.data.datasets [0].data= killData;
 
+          }
+          
+          if (label=== "deathData"){
+             myChart.data.datasets [0].data= deathData;
+
+          }
+          
+          if (label=== "assistantData"){
+             myChart.data.datasets [0].data= assistantData;
+
+          }
+          
+          if (label=== "winrateData"){
+             myChart.data.datasets [0].data= winrateData;
+
+          }
+          
+          if (label=== "pickrateData"){
+             myChart.data.datasets [0].data= pickrateData;
+          }
+          
+          if (label === "attackwinrateData"){
+             myChart.data.datasets [0].data= attackwinrateData;
+
+          }
+          
+          if (label=== "defenderwinrateData"){
+             myChart.data.datasets [0].data= defenderwinrateData;
+
+          }
+          
+          if (label=== "totalgameData"){
+             myChart.data.datasets [0].data= totalgameData;
+
+          }
+
+            myChart.update();
+        };
+        
+
+     
+      </script>
+    
+    
     
 
 
